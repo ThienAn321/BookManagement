@@ -1,0 +1,232 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Admin (generated)" id="1698739092574-1">
+        <createTable tableName="author">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="fullname" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_birth" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-2">
+        <createTable tableName="book">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="INT"/>
+            <column name="description" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="INT"/>
+            <column name="category_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="release_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-3">
+        <createTable tableName="borrow_management">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="book_id" type="INT"/>
+            <column name="status_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="borrow_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="return_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-4">
+        <createTable tableName="borrow_status">
+            <column name="id" type="VARCHAR(50)">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <sqlFile path="db/sql/insert_borrowStatus.sql" />
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-5">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-6">
+        <createTable tableName="role">
+            <column name="id" type="VARCHAR(50)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+         <sqlFile path="db/sql/insert_role.sql" />
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-7">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="NVARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fullname" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="NVARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="phone" type="VARCHAR(10)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="date_birth" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-8">
+        <createTable tableName="user_session">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="session_id" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_refresh_token" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expire_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-9">
+        <createTable tableName="user_status">
+            <column name="id" type="VARCHAR(50)">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="name" type="NVARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <sqlFile path="db/sql/insert_userStatus.sql" />
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-10">
+        <createIndex indexName="author_id" tableName="book">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-11">
+        <createIndex indexName="book_id" tableName="borrow_management">
+            <column name="book_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-12">
+        <createIndex indexName="category_id" tableName="book">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-13">
+        <createIndex indexName="role_id" tableName="user">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-14">
+        <createIndex indexName="status_id" tableName="borrow_management">
+            <column name="status_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-15">
+        <createIndex indexName="status_id" tableName="user">
+            <column name="status_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-16">
+        <createIndex indexName="user_id" tableName="borrow_management">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-17">
+        <createIndex indexName="user_id" tableName="user_session">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-18">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="book" constraintName="book_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="author" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-19">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="book" constraintName="book_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="category" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-20">
+        <addForeignKeyConstraint baseColumnNames="book_id" baseTableName="borrow_management" constraintName="borrow_management_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="book" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-21">
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="borrow_management" constraintName="borrow_management_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="borrow_status" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-22">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="borrow_management" constraintName="borrow_management_ibfk_3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="user" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-23">
+        <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="user" constraintName="user_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="user_status" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-24">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user" constraintName="user_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="role" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698739092574-25">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_session" constraintName="user_session_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="user" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
