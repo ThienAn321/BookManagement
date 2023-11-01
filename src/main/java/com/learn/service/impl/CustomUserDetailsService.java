@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.learn.exception.UserNotFoundException;
+import com.learn.exception.EmailNotFoundException;
 import com.learn.model.User;
 import com.learn.service.UserService;
 
@@ -19,12 +19,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userService.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             return new CustomUserDetails(user.get());
         }
-        throw new UserNotFoundException("Username not found !");
+        throw new EmailNotFoundException("Email not found !");
     }
 
 }

@@ -25,10 +25,10 @@ public class JwtServiceImpl implements JwtService {
     private String secret_key;
 
     @Value("${jwt.expiration}")
-    private Integer jwtExpiration;
+    private int jwtExpiration;
 
     @Value("${jwt.refreshExpiration}")
-    private Integer refreshExpirationDate;
+    private int refreshExpirationDate;
 
     @Override
     public String generateToken(UserDetails userDetails, String id, boolean refreshToken) {
@@ -62,12 +62,12 @@ public class JwtServiceImpl implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secret_key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    
-    private Claims parser(String token)  {
+
+    private Claims parser(String token) {
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
 
     }
-    
+
     @Override
     public String getUsernameFromToken(String token) {
         Claims claims = parser(token);
@@ -80,18 +80,18 @@ public class JwtServiceImpl implements JwtService {
         String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
-    
+
     @Override
     public boolean isTokenExpired(String token) {
         return getExpirationToken(token).before(new Date());
     }
-    
+
     @Override
     public Date getExpirationToken(String token) {
         Claims claims = parser(token);
         return claims.getExpiration();
     }
-    
+
     @Override
     public Date getIssuedAt(String token) {
         Claims claims = parser(token);
@@ -103,11 +103,5 @@ public class JwtServiceImpl implements JwtService {
         Claims claims = parser(token);
         return claims.getId();
     }
-
-//
-//    @Override
-//    public String getId(String token) {
-//        return extractClaim(token, Claims::getId);
-//    }
 
 }

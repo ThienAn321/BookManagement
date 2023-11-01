@@ -1,10 +1,10 @@
 package com.learn.exception;
 
-public class TokenExpiredException extends RuntimeException {
+public class EmailAlreadyExist extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public TokenExpiredException(String message) {
+    public EmailAlreadyExist(String message) {
         super(message);
     }
 

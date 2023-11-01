@@ -8,8 +8,12 @@ import com.learn.service.dto.RegisterDTO;
 
 public interface UserService {
     List<User> findAll();
-    
-    Optional<User> findByUsername(String username);
-    
+
+    Optional<User> findByEmail(String email);
+
     public void register(RegisterDTO request);
+
+    public boolean verifyRegisterAccount(String token, String otp);
+    
+//    public boolean verifyRegisterAccountByOTP(String otp);
 }

@@ -36,13 +36,25 @@ CREATE Table user (
     password VARCHAR(255) NOT NULL,
     fullname NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) NOT NULL UNIQUE,
+    failed_attempt TINYINT,
     phone VARCHAR(10) NOT NULL UNIQUE,
-    date_birth DATETIME NOT NULL,
+    date_birth DATETIME,
     status_id VARCHAR(50) NOT NULL,
     role_id VARCHAR(50) NOT NULL,
 	create_at DATETIME NOT NULL,
     FOREIGN KEY (status_id) REFERENCES user_status(id),
     FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+CREATE TABLE verification_token(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	token NVARCHAR(60) UNIQUE NOT NULL,
+    otp VARCHAR(60) UNIQUE NOT NULL,
+    user_id INT NOT NULL,
+	create_at DATETIME NOT NULL,
+	expire_at DATETIME NOT NULL,
+	is_expired BOOLEAN NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
 CREATE TABLE user_session (
@@ -101,9 +113,7 @@ VALUES
 		('NOTAPPROVED', 'Chưa duyệt'),
         ('PAID', 'Đã trả'),
 		('UNPAID', 'Chưa trả');
-        
-
-
+	
 
 
 

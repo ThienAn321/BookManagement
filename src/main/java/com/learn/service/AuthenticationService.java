@@ -5,6 +5,6 @@ import com.learn.service.dto.AuthenticationResponse;
 
 public interface AuthenticationService {
 
-    AuthenticationResponse authenticate(AuthenticationRequest request);
+    AuthenticationResponse login(AuthenticationRequest request);
 
 }

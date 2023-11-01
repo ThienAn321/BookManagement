@@ -116,7 +116,7 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="date_birth" type="datetime">
-                <constraints nullable="false"/>
+<!--                 <constraints nullable="false"/> -->
             </column>
             <column name="status_id" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -229,4 +229,5 @@
     <changeSet author="Admin (generated)" id="1698739092574-25">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_session" constraintName="user_session_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="user" validate="true"/>
     </changeSet>
+<!--     <include file="db/changelog/changeLog.xml" relativeToChangelogFile="false"/> -->
 </databaseChangeLog>

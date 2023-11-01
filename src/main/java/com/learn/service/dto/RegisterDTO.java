@@ -2,7 +2,6 @@ package com.learn.service.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,7 @@ public class RegisterDTO {
     @Size(max = 255, message = "Tên tối đa 255 ký tự")
     private String fullname;
     
-    @Email(message = "Phải đúng định dạng email")
+    @Email(message = "Phải đúng dạng email")
     @NotBlank(message = "Không để trống Email")
     @Size(max = 255, message = "Email tối đa 255 ký tự")
     private String email;
