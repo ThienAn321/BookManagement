@@ -12,4 +12,8 @@ public interface UserSessionService {
     void saveAll(User user, String jti);
     
     Optional<UserSession> findBySessionID(String sessionID);
+    
+    Optional<UserSession> findRefreshToken(String sessionID);
+    
+    void deleteToken(String sessionID);
 }

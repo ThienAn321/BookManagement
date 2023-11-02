@@ -1,26 +1,34 @@
 package com.learn.model;
 
+import java.time.Instant;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "verification_token")
-public class VerificationToken {
-    
+@EntityListeners(AuditingEntityListener.class)
+public class VerificationToken extends AbstractAuditingEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,20 +36,20 @@ public class VerificationToken {
 
     @Column(name = "token", columnDefinition = "NVARCHAR(255)", unique = true, nullable = false)
     private String token;
-    
+
     @Column(name = "otp", columnDefinition = "VARCHAR(60)", unique = true, nullable = false)
     private String otp;
 
-    @Column(name = "create_at", nullable = false)
-    private String createdAt;
-    
     @Column(name = "expire_at", nullable = false)
-    private String expireAt;
+    private Instant expireAt;
+
+    @Column(name = "is_verify", nullable = false)
+    private boolean isVerify;
     
-    @Column(name = "is_expired", nullable = false)
-    private boolean isExpired;
-    
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(name = "is_expire", nullable = false)
+    private boolean isExpire;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 }

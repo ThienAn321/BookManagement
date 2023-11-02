@@ -1,5 +1,6 @@
 package com.learn.service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import com.learn.model.VerificationToken;
@@ -11,8 +12,13 @@ public interface VerificationTokenService {
     VerificationToken save(VerificationToken token);
 
     Optional<VerificationToken> findByTokenOrOtp(String token, String otp);
-    
-//    Optional<VerificationToken> findByOtp(String otp);
 
     void delete(Integer id);
+    
+    void deleteAllExpiredSince(Instant instant);
+    
+    void deleteAllVerifyToken();
+    
+    boolean isExpire(String token, String otp);
+    
 }

@@ -1,6 +1,7 @@
 package com.learn.service.impl;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,7 +13,6 @@ import com.learn.model.VerificationToken;
 import com.learn.model.User;
 import com.learn.repository.VerificationTokenRepository;
 import com.learn.service.VerificationTokenService;
-import com.learn.util.DateUtil;
 import com.learn.util.OTPUtil;
 import com.learn.service.EmailService;
 
@@ -23,28 +23,23 @@ import jakarta.mail.MessagingException;
 public class VerificationTokenServiceImpl implements VerificationTokenService {
 
     @Autowired
-    private VerificationTokenRepository confirmTokenRepository;
+    private VerificationTokenRepository verificationTokenRepository;
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private DateUtil dateUtil;
 
     @Autowired
     private OTPUtil otpUtil;
 
     @Override
     public void sendConfirmationToken(User user) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tokenExpireAt = now.plusMinutes(15);
+        Instant expireTokenDate = Instant.now().plus(15, ChronoUnit.MINUTES);
 
         String token = UUID.randomUUID().toString();
         String otp = otpUtil.generateOTP();
-        VerificationToken confirmationToken = VerificationToken.builder().token(token).otp(otp)
-                .createdAt(dateUtil.createDate(now)).expireAt(dateUtil.createDate(tokenExpireAt)).isExpired(false)
-                .user(user).build();
-        save(confirmationToken);
+        VerificationToken verificationToken = VerificationToken.builder().token(token).otp(otp)
+                .expireAt(expireTokenDate).isVerify(false).isExpire(false).user(user).build();
+        save(verificationToken);
         try {
             emailService.sendMail("thienan98765123@gmail.com", user.getEmail(), "Confirm Account",
                     emailService.buildEmail(user.getFullname(), token, otp));
@@ -55,22 +50,40 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 
     @Override
     public VerificationToken save(VerificationToken token) {
-        return confirmTokenRepository.save(token);
+        return verificationTokenRepository.save(token);
     }
 
     @Override
     public Optional<VerificationToken> findByTokenOrOtp(String token, String otp) {
-        return confirmTokenRepository.findByTokenOrOtp(token, otp);
+        return verificationTokenRepository.findByTokenOrOtp(token, otp);
     }
 
     @Override
     public void delete(Integer id) {
-        confirmTokenRepository.deleteById(id);
+        verificationTokenRepository.deleteById(id);
     }
 
-//    @Override
-//    public Optional<VerificationToken> findByOtp(String otp) {
-//        return confirmTokenRepository.findByOtp(otp);
-//    }
+    @Override
+    public void deleteAllExpiredSince(Instant instant) {
+        verificationTokenRepository.deleteAllExpiredSince(instant);
+    }
+
+    @Override
+    public void deleteAllVerifyToken() {
+        verificationTokenRepository.deleteAllVerifyToken();
+    }
+
+    @Override
+    public boolean isExpire(String token, String otp) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByTokenOrOtp(token, otp);
+        if (verificationToken.isPresent()) {
+            Instant expire = verificationToken.get().getExpireAt();
+            if (expire.compareTo(Instant.now()) < 0) {
+                verificationToken.get().setExpire(true);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

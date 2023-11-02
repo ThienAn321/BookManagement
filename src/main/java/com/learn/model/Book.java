@@ -1,10 +1,13 @@
 package com.learn.model;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,12 +16,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "book")
-public class Book {
+@EntityListeners(AuditingEntityListener.class)
+public class Book extends AbstractAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +53,7 @@ public class Book {
     private String description;
 
     @Column(name = "release_date")
-    private LocalDate releaseDate;
+    private Instant releaseDate;
 
     @OneToMany(mappedBy = "book")
     private List<BorrowManagement> borrowManagement;

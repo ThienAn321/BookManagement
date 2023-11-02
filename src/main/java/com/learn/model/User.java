@@ -1,7 +1,7 @@
 package com.learn.model;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,8 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
@@ -60,8 +62,8 @@ public class User extends AbstractAuditingEntity {
     @Column(name = "failed_attempt", columnDefinition = "TINYINT")
     private Integer failedAttempt;
 
-//    @Column(name = "create_at")
-//    private String createAt;
+    @Column(name = "lock_time", nullable = true)
+    private Instant lockTime;
 
     @OneToMany(mappedBy = "user")
     private List<BorrowManagement> borrowManagement;
@@ -79,7 +81,7 @@ public class User extends AbstractAuditingEntity {
     private List<UserSession> userSession;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private Set<VerificationToken> confirmToken;
+    @OneToOne(mappedBy = "user")
+    private VerificationToken verificationToken;
 
 }

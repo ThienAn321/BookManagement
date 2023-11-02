@@ -65,14 +65,12 @@ public class JwtServiceImpl implements JwtService {
 
     private Claims parser(String token) {
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
-
     }
 
     @Override
     public String getUsernameFromToken(String token) {
         Claims claims = parser(token);
         return claims.getSubject();
-
     }
 
     @Override

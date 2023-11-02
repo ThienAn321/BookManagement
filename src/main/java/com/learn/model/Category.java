@@ -15,15 +15,15 @@ import lombok.Data;
 @Data
 @Table(name = "category")
 public class Category {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    
+
     @Column(name = "name", columnDefinition = "NVARCHAR(255)")
     private String name;
-    
+
     @OneToMany(mappedBy = "category")
     private List<Book> book;
 }

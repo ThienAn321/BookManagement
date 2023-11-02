@@ -1,4 +1,4 @@
-package com.learn.controller;
+package com.learn.rest.controller;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,13 +23,12 @@ public class VerifyController {
     @GetMapping("/confirm")
     public ResponseEntity<?> confirmByLink(@RequestParam("value") String value) {
         Map<String, Object> map = new LinkedHashMap<>();
-        // value ở đây có thể là link verify hoặc otp
-        // verifyRegisterAccount check link verify hoac otp
+//      value ở đây có thể là link verify hoặc otp
+//      verifyRegisterAccount check link verify hoac otp
         userService.verifyRegisterAccount(value, value);
         map.put("status", HttpStatus.OK.value());
         map.put("message", "Verify thành công !");
         return new ResponseEntity<>(map, HttpStatus.OK);
-
     }
 
 }

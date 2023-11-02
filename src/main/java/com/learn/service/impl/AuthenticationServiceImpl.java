@@ -31,10 +31,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
         User user = userService.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EmailNotFoundException("Email not found"));
+
+        // loginFailed
+        userService.loginFailed(request, user);
+
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
         CustomUserDetails userDetails = new CustomUserDetails(user);
         String accessToken = jwtService.generateToken(userDetails, null, false);
         String jti = jwtService.getId(accessToken);

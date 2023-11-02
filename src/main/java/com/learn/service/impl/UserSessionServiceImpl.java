@@ -1,6 +1,7 @@
 package com.learn.service.impl;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,16 +14,12 @@ import com.learn.model.User;
 import com.learn.model.UserSession;
 import com.learn.repository.UserSessionRepository;
 import com.learn.service.UserSessionService;
-import com.learn.util.DateUtil;
 
 @Service
 public class UserSessionServiceImpl implements UserSessionService {
 
     @Autowired
     private UserSessionRepository userSessionRepository;
-
-    @Autowired
-    private DateUtil dateUtil;
 
     @Override
     public UserSession save(UserSession userSession) {
@@ -31,24 +28,31 @@ public class UserSessionServiceImpl implements UserSessionService {
 
     @Override
     public void saveAll(User user, String jti) {
-        LocalDateTime createDate = LocalDateTime.now();
-        LocalDateTime expireTokenDate = createDate.plusMinutes(30);
-        LocalDateTime expireRefreshTokenDate = createDate.plusMinutes(60);
-        
+        Instant expireTokenDate = Instant.now().plus(30, ChronoUnit.MINUTES);
+        Instant expireRefreshTokenDate = Instant.now().plus(60, ChronoUnit.MINUTES);
+
         UserSession accessToken = UserSession.builder().sessionID(jti).isActive(true).isRefreshToken(false)
-                .createAt(dateUtil.createDate(createDate)).expireAt(dateUtil.createDate(expireTokenDate)).user(user)
-                .build();
+                .expireAt(expireTokenDate).user(user).build();
         UserSession refreshToken = UserSession.builder().sessionID(jti).isActive(true).isRefreshToken(true)
-                .createAt(dateUtil.createDate(createDate)).expireAt(dateUtil.createDate(expireRefreshTokenDate)).user(user)
-                .build();
-        
+                .expireAt(expireRefreshTokenDate).user(user).build();
+
         List<UserSession> userSession = new ArrayList<>(Arrays.asList(accessToken, refreshToken));
         userSessionRepository.saveAll(userSession);
     }
 
     @Override
     public Optional<UserSession> findBySessionID(String sessionID) {
-        return Optional.of(userSessionRepository.findBySessionID(sessionID)).get();
+        return userSessionRepository.findBySessionID(sessionID);
+    }
+
+    @Override
+    public Optional<UserSession> findRefreshToken(String sessionID) {
+        return userSessionRepository.findRefreshToken(sessionID);
+    }
+
+    @Override
+    public void deleteToken(String sessionID) {
+        userSessionRepository.deleteToken(sessionID);
     }
 
 }

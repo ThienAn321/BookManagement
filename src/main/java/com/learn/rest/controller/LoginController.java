@@ -1,4 +1,4 @@
-package com.learn.controller;
+package com.learn.rest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

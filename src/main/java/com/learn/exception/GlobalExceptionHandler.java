@@ -19,7 +19,34 @@ import com.learn.service.dto.ErrorDTO;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleUserNotFoundException(EmailNotFoundException ex) {
+    public ResponseEntity<ErrorDTO> handleEmailNotActived(EmailNotActived ex) {
+        ErrorDTO errorObject = new ErrorDTO();
+        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleEmailNotFoundException(EmailNotFoundException ex) {
+        ErrorDTO errorObject = new ErrorDTO();
+        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleUserInvalidException(UserInvalidException ex) {
+        ErrorDTO errorObject = new ErrorDTO();
+        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleUserSessionNotFoundException(UserSessionNotFoundException ex) {
         ErrorDTO errorObject = new ErrorDTO();
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorObject.setMessage(ex.getMessage());
@@ -38,6 +65,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorDTO> handleEmailAlreadyExistException(EmailAlreadyExist ex) {
+        ErrorDTO errorObject = new ErrorDTO();
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleEmailAlreadyActivedException(EmailAlreadyActived ex) {
+        ErrorDTO errorObject = new ErrorDTO();
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleLinkVerifyIsNotExpiredException(LinkVerifyIsNotExpired ex) {
         ErrorDTO errorObject = new ErrorDTO();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());

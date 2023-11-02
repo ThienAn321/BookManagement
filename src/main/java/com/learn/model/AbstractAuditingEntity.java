@@ -28,4 +28,5 @@ public abstract class AbstractAuditingEntity {
     public void setCreatedDate(Instant createdAt) {
         this.createdAt = createdAt;
     }
+
 }
