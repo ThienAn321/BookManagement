@@ -1,14 +1,22 @@
 package com.learn.service.dto;
 
+import java.time.Instant;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseRefreshDTO {
-    private String token;
+@Data
+@Builder
+public class ObjectDTO {
+
+    private Integer statusCode;
+
+    private String message;
+
+    private Instant timestamp;
+
 }

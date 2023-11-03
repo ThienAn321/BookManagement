@@ -8,21 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.learn.service.VerificationTokenService;
+import com.learn.repository.VerificationTokenRepository;
 
 @Component
 public class SchedulerConfig {
-    
+
     @Autowired
-    private VerificationTokenService verificationTokenService;
+    private VerificationTokenRepository verificationTokenRepository;
 
-    Logger logger = LoggerFactory.getLogger(SchedulerConfig.class);
+    private Logger logger = LoggerFactory.getLogger(SchedulerConfig.class);
 
-    @Scheduled(fixedRate = 10000L, initialDelay = 10000L)
+    @Scheduled(fixedRate = 1000000L, initialDelay = 1000000L)
     public void deleteAllTokenExpiredAndVerify() {
-        verificationTokenService.deleteAllExpiredSince(Instant.now());
-        verificationTokenService.deleteAllVerifyToken();
-        logger.info("Delete all token verify and expired : " + Instant.now());
+        verificationTokenRepository.deleteAllExpiredSince(Instant.now());
+        logger.info("Delete all token verify and expired {}: ", Instant.now());
     }
 
 }

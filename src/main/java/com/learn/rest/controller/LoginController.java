@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.service.AuthenticationService;
-import com.learn.service.dto.AuthenticationRequest;
-import com.learn.service.dto.AuthenticationResponse;
+import com.learn.service.dto.AuthenticationRequestDTO;
+import com.learn.service.dto.AuthenticationResponseDTO;
 
 import jakarta.validation.Valid;
 
@@ -21,7 +21,7 @@ public class LoginController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody @Valid AuthenticationRequestDTO request) {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 

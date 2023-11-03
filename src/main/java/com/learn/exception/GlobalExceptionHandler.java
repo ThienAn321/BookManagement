@@ -13,14 +13,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.learn.service.dto.ErrorDTO;
+import com.learn.service.dto.ObjectDTO;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleEmailNotActived(EmailNotActived ex) {
-        ErrorDTO errorObject = new ErrorDTO();
+    public ResponseEntity<ObjectDTO> handleDataNotFoundException(DataNotFoundException ex) {
+        ObjectDTO errorObject = new ObjectDTO();
+        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(Instant.now());
+        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ObjectDTO> handleDataUnauthorizedException(DataUnauthorizedException ex) {
+        ObjectDTO errorObject = new ObjectDTO();
         errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(Instant.now());
@@ -28,44 +37,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleEmailNotFoundException(EmailNotFoundException ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
-    }
-    
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleUserInvalidException(UserInvalidException ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
-    }
-    
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleUserSessionNotFoundException(UserSessionNotFoundException ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleConfirmTokenNotFoundException(LinkVerifyNotFound ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleEmailAlreadyExistException(EmailAlreadyExist ex) {
-        ErrorDTO errorObject = new ErrorDTO();
+    public ResponseEntity<ObjectDTO> handleDataInvalidException(DataInvalidException ex) {
+        ObjectDTO errorObject = new ObjectDTO();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(Instant.now());
@@ -73,28 +46,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleEmailAlreadyActivedException(EmailAlreadyActived ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<ObjectDTO> handleDataAlreadyExistException(DataAlreadyExistException ex) {
+        ObjectDTO errorObject = new ObjectDTO();
+        errorObject.setStatusCode(HttpStatus.CONFLICT.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleLinkVerifyIsNotExpiredException(LinkVerifyIsNotExpired ex) {
-        ErrorDTO errorObject = new ErrorDTO();
-        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(Instant.now());
-        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ErrorDTO> handleUsernameAlreadyExist(SQLIntegrityConstraintViolationException ex) {
-        ErrorDTO errorObject = new ErrorDTO();
+    public ResponseEntity<ObjectDTO> handleUsernameAlreadyExist(SQLIntegrityConstraintViolationException ex) {
+        ObjectDTO errorObject = new ObjectDTO();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorObject.setMessage("Đăng kí thất bại");
+        errorObject.setMessage("Đăng kí thất bại ! Username hoặc email hoặc số điện thoại đã trùng");
         errorObject.setTimestamp(Instant.now());
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
@@ -104,7 +68,7 @@ public class GlobalExceptionHandler {
     public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("status", HttpStatus.BAD_REQUEST.value());
-        map.put("message", "Đăng ký không thành công !");
+        map.put("message", "Register failed");
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();

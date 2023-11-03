@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.learn.exception.EmailNotActived;
+import com.learn.exception.DataUnauthorizedException;
 import com.learn.model.User;
 import com.learn.model.enumeration.UserStatus;
 
@@ -53,7 +53,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         if (user.getUserStatus().equals(UserStatus.NOTACTIVATED)) {
-            throw new EmailNotActived("Email chưa kích hoạt");
+            throw new DataUnauthorizedException("error.email.notactivated");
         }
         if (!user.getUserStatus().equals(UserStatus.ACTIVATED)) {
             return false;

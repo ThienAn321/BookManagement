@@ -15,17 +15,17 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Data
 @Builder
 @Table(name = "verification_token")
+@EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class VerificationToken extends AbstractAuditingEntity {
 
@@ -52,4 +52,5 @@ public class VerificationToken extends AbstractAuditingEntity {
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
+    
 }

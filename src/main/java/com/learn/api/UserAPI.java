@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.model.User;
-import com.learn.service.UserService;
+import com.learn.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/v1")
 public class UserAPI {
-    
+
     @Autowired
-    private UserService userSerivce;
-    
+    private UserRepository userRepository;
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return userSerivce.findAll();
+        return userRepository.findAll();
     }
-    
+
 }

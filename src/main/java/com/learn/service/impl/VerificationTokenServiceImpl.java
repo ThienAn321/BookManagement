@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.learn.model.VerificationToken;
+import com.learn.exception.DataInvalidException;
 import com.learn.model.User;
 import com.learn.repository.VerificationTokenRepository;
 import com.learn.service.VerificationTokenService;
@@ -32,45 +33,20 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     private OTPUtil otpUtil;
 
     @Override
-    public void sendConfirmationToken(User user) {
+    public void sendVerificationToken(User user) {
         Instant expireTokenDate = Instant.now().plus(15, ChronoUnit.MINUTES);
 
         String token = UUID.randomUUID().toString();
-        String otp = otpUtil.generateOTP();
-        VerificationToken verificationToken = VerificationToken.builder().token(token).otp(otp)
+        String otpGenerate = otpUtil.generateOTP();
+        VerificationToken verificationToken = VerificationToken.builder().token(token).otp(otpGenerate)
                 .expireAt(expireTokenDate).isVerify(false).isExpire(false).user(user).build();
-        save(verificationToken);
+        verificationTokenRepository.save(verificationToken);
         try {
             emailService.sendMail("thienan98765123@gmail.com", user.getEmail(), "Confirm Account",
-                    emailService.buildEmail(user.getFullname(), token, otp));
+                    emailService.buildEmail(user.getFullname(), token, otpGenerate));
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new DataInvalidException("{email.error}");
         }
-    }
-
-    @Override
-    public VerificationToken save(VerificationToken token) {
-        return verificationTokenRepository.save(token);
-    }
-
-    @Override
-    public Optional<VerificationToken> findByTokenOrOtp(String token, String otp) {
-        return verificationTokenRepository.findByTokenOrOtp(token, otp);
-    }
-
-    @Override
-    public void delete(Integer id) {
-        verificationTokenRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteAllExpiredSince(Instant instant) {
-        verificationTokenRepository.deleteAllExpiredSince(instant);
-    }
-
-    @Override
-    public void deleteAllVerifyToken() {
-        verificationTokenRepository.deleteAllVerifyToken();
     }
 
     @Override

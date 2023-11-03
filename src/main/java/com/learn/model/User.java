@@ -22,17 +22,17 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
+@Data
 @Table(name = "user")
+@EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class User extends AbstractAuditingEntity {
 
@@ -76,7 +76,6 @@ public class User extends AbstractAuditingEntity {
     @Column(name = "role_id")
     private Role role;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserSession> userSession;
 

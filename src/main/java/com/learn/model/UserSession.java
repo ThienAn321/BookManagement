@@ -4,6 +4,8 @@ import java.time.Instant;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,17 +17,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Data
 @Builder
 @Table(name = "user_session")
+@EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class UserSession extends AbstractAuditingEntity {
 
@@ -34,18 +36,16 @@ public class UserSession extends AbstractAuditingEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "session_id", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "session_id", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String sessionID;
 
     @Column(name = "is_active")
     private boolean isActive;
 
-    @Column(name = "is_refresh_token")
-    private boolean isRefreshToken;
-
     @Column(name = "expire_at")
     private Instant expireAt;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

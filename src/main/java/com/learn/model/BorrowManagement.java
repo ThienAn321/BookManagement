@@ -17,17 +17,17 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Data
 @Builder
 @Table(name = "borrow_management")
+@EqualsAndHashCode(callSuper = false)
 public class BorrowManagement extends AbstractAuditingEntity {
 
     @Id

@@ -11,12 +11,12 @@ import com.learn.model.UserSession;
 
 @Repository
 public interface UserSessionRepository extends JpaRepository<UserSession, Integer> {
-    Optional<UserSession> findBySessionID(String sessionID);
 
-    @Query("SELECT u FROM UserSession u WHERE u.sessionID = ?1 AND u.isRefreshToken = TRUE")
+    @Query("SELECT u FROM UserSession u WHERE u.sessionID = ?1")
     Optional<UserSession> findRefreshToken(String sessionID);
 
     @Modifying
-    @Query("DELETE FROM UserSession u WHERE u.sessionID = ?1 AND u.isRefreshToken = FALSE")
+    @Query("DELETE FROM UserSession u WHERE u.sessionID = ?1")
     void deleteToken(String sessionID);
+
 }

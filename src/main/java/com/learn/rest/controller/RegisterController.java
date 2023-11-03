@@ -1,8 +1,5 @@
 package com.learn.rest.controller;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.service.UserService;
+import com.learn.service.dto.ObjectDTO;
 import com.learn.service.dto.RegisterDTO;
 
 import jakarta.validation.Valid;
@@ -24,13 +22,8 @@ public class RegisterController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO request) {
-        userService.register(request);
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.CREATED.value());
-        map.put("message", "Đăng ký thành công !");
-        map.put("verify", "Vui lòng kiểm tra gmail");
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+    public ResponseEntity<ObjectDTO> register(@RequestBody @Valid RegisterDTO request) {
+        return new ResponseEntity<>(userService.register(request), HttpStatus.CREATED);
     }
-    
+
 }

@@ -8,13 +8,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestRefreshDTO {
+@Data
+@Builder
+public class RefreshRequestDTO {
+
     @Email(message = "Phải đúng dạng email")
     @NotBlank(message = "Không để trống Email")
     @Size(max = 255, message = "Email tối đa 255 ký tự")
     private String email;
+
 }

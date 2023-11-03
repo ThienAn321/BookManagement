@@ -1,8 +1,5 @@
 package com.learn.rest.controller;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.learn.service.UserService;
-import com.learn.service.dto.RequestRefreshDTO;
+import com.learn.service.ResendVerifyService;
+import com.learn.service.dto.ObjectDTO;
+import com.learn.service.dto.RefreshRequestDTO;
 
 import jakarta.validation.Valid;
 
@@ -21,15 +19,11 @@ import jakarta.validation.Valid;
 public class ResendVerifyController {
 
     @Autowired
-    UserService userService;
+    private ResendVerifyService resendVerifyService;
 
     @PostMapping("/resend")
-    public ResponseEntity<?> resend(@RequestBody @Valid RequestRefreshDTO request) {
-        userService.resendVerify(request);
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.OK.value());
-        map.put("verify", "Vui lòng kiểm tra gmail");
-        return new ResponseEntity<>(map, HttpStatus.OK);
+    public ResponseEntity<ObjectDTO> resend(@RequestBody @Valid RefreshRequestDTO request) {
+        return new ResponseEntity<>(resendVerifyService.resendVerify(request), HttpStatus.OK);
     }
 
 }

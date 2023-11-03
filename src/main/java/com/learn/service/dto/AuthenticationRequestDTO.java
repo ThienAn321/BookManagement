@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class AuthenticationRequestDTO {
     
     @Email(message = "Phải đúng dạng email")
     @NotBlank(message = "Không để trống Email")

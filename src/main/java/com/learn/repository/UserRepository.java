@@ -16,11 +16,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
     
     @Modifying
-    @Query(value = "UPDATE user u SET u.lock_time = ?1 WHERE u.email = ?2", nativeQuery = true)
+    @Query("UPDATE User u SET u.lockTime = ?1 WHERE u.email = ?2")
     void updateLockTime(Instant lockTime, String email);
 
     @Modifying
-    @Query(value = "UPDATE user u SET u.failed_attempt = ?1 WHERE u.email = ?2", nativeQuery = true)
+    @Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.email = ?2")
     void updateFailedAttempts(int failAttempts, String email);
 
 }
