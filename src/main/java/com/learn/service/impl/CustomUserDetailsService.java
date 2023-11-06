@@ -8,23 +8,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.learn.exception.UserNotFoundException;
+import com.learn.exception.DataNotFoundException;
 import com.learn.model.User;
-import com.learn.service.UserService;
+import com.learn.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userService.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             return new CustomUserDetails(user.get());
         }
-        throw new UserNotFoundException("Username not found !");
+        throw new DataNotFoundException("{email.notfound}");
     }
 
 }

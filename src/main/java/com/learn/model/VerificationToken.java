@@ -4,8 +4,6 @@ import java.time.Instant;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -13,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,28 +24,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "user_session")
+@Table(name = "verification_token")
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
-public class UserSession extends AbstractAuditingEntity {
+public class VerificationToken extends AbstractAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "session_id", columnDefinition = "NVARCHAR(255)", nullable = false)
-    private String sessionID;
+    @Column(name = "token", columnDefinition = "NVARCHAR(255)", unique = true, nullable = false)
+    private String token;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "otp", columnDefinition = "VARCHAR(60)", unique = true, nullable = false)
+    private String otp;
 
-    @Column(name = "expire_at")
+    @Column(name = "expire_at", nullable = false)
     private Instant expireAt;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "is_verify", nullable = false)
+    private boolean isVerify;
+    
+    @Column(name = "is_expire", nullable = false)
+    private boolean isExpire;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
+    
 }

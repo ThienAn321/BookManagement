@@ -3,20 +3,20 @@ package com.learn.service.dto;
 import java.time.Instant;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class ErrorDTO {
+@Data
+@Builder
+public class ObjectDTO {
 
     private Integer statusCode;
 
     private String message;
-    
+
     private Instant timestamp;
-    
+
 }

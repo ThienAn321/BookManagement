@@ -1,0 +1,205 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Admin (generated)" id="1698808213718-56">
+        <addColumn tableName="author">
+            <column name="test" type="NVARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-57">
+        <dropForeignKeyConstraint baseTableName="borrow_management" constraintName="borrow_management_ibfk_2"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-58">
+        <dropForeignKeyConstraint baseTableName="user" constraintName="user_ibfk_1"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-59">
+        <dropForeignKeyConstraint baseTableName="user" constraintName="user_ibfk_2"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-60">
+        <dropUniqueConstraint constraintName="id" tableName="borrow_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-61">
+        <dropUniqueConstraint constraintName="id" tableName="user_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-62">
+        <dropUniqueConstraint constraintName="name" tableName="borrow_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-63">
+        <dropUniqueConstraint constraintName="name" tableName="user_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-64">
+        <dropTable tableName="borrow_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-65">
+        <dropTable tableName="role"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-66">
+        <dropTable tableName="user_status"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-1">
+        <modifyDataType columnName="author_id" newDataType="int" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-2">
+        <modifyDataType columnName="book_id" newDataType="int" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-3">
+        <modifyDataType columnName="borrow_date" newDataType="date" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-4">
+        <modifyDataType columnName="category_id" newDataType="int" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-5">
+        <dropNotNullConstraint columnDataType="int" columnName="category_id" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-6">
+        <modifyDataType columnName="create_at" newDataType="varchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-7">
+        <modifyDataType columnName="create_at" newDataType="varchar(255)" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-8">
+        <modifyDataType columnName="create_date" newDataType="date" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-9">
+        <modifyDataType columnName="date_birth" newDataType="varchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-10">
+        <modifyDataType columnName="description" newDataType="nvarchar(255)" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-11">
+        <dropNotNullConstraint columnDataType="nvarchar(255)" columnName="description" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-12">
+        <modifyDataType columnName="email" newDataType="nvarchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-13">
+        <modifyDataType columnName="expire_at" newDataType="varchar(255)" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-14">
+        <modifyDataType columnName="fullname" newDataType="nvarchar(255)" tableName="author"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-15">
+        <modifyDataType columnName="fullname" newDataType="nvarchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-16">
+        <modifyDataType columnName="id" newDataType="int" tableName="author"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-17">
+        <modifyDataType columnName="id" newDataType="int" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-18">
+        <modifyDataType columnName="id" newDataType="int" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-19">
+        <modifyDataType columnName="id" newDataType="int" tableName="category"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-20">
+        <modifyDataType columnName="id" newDataType="int" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-21">
+        <modifyDataType columnName="id" newDataType="int" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-22">
+        <modifyDataType columnName="is_active" newDataType="boolean" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-23">
+        <dropNotNullConstraint columnDataType="boolean" columnName="is_active" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-24">
+        <modifyDataType columnName="is_refresh_token" newDataType="boolean" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-25">
+        <dropNotNullConstraint columnDataType="boolean" columnName="is_refresh_token" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-26">
+        <modifyDataType columnName="name" newDataType="nvarchar(255)" tableName="category"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-27">
+        <dropNotNullConstraint columnDataType="nvarchar(255)" columnName="name" tableName="category"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-28">
+        <modifyDataType columnName="password" newDataType="varchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-29">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="password" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-30">
+        <modifyDataType columnName="phone" newDataType="varchar(10)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-31">
+        <modifyDataType columnName="quantity" newDataType="int" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-32">
+        <modifyDataType columnName="rating" newDataType="int" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-33">
+        <addNotNullConstraint columnDataType="int" columnName="rating" tableName="book" validate="true"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-34">
+        <modifyDataType columnName="release_date" newDataType="date" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-35">
+        <modifyDataType columnName="return_date" newDataType="date" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-36">
+        <modifyDataType columnName="role_id" newDataType="varchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-37">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="role_id" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-38">
+        <modifyDataType columnName="session_id" newDataType="nvarchar(255)" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-39">
+        <dropNotNullConstraint columnDataType="nvarchar(255)" columnName="session_id" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-40">
+        <modifyDataType columnName="status_id" newDataType="varchar(255)" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-41">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="status_id" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-42">
+        <modifyDataType columnName="status_id" newDataType="varchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-43">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="status_id" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-44">
+        <modifyDataType columnName="stock" newDataType="int" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-45">
+        <modifyDataType columnName="title" newDataType="nvarchar(255)" tableName="book"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-46">
+        <modifyDataType columnName="user_id" newDataType="int" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-47">
+        <dropNotNullConstraint columnDataType="int" columnName="user_id" tableName="borrow_management"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-48">
+        <modifyDataType columnName="user_id" newDataType="int" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-49">
+        <dropNotNullConstraint columnDataType="int" columnName="user_id" tableName="user_session"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-50">
+        <modifyDataType columnName="username" newDataType="nvarchar(255)" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-51">
+        <dropNotNullConstraint columnDataType="nvarchar(255)" columnName="username" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-52">
+        <dropUniqueConstraint constraintName="UC_USERPHONE_COL" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-53">
+        <addUniqueConstraint columnNames="phone" constraintName="UC_USERPHONE_COL" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-54">
+        <dropUniqueConstraint constraintName="UC_USERUSERNAME_COL" tableName="user"/>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1698808213718-55">
+        <addUniqueConstraint columnNames="username" constraintName="UC_USERUSERNAME_COL" tableName="user"/>
+    </changeSet>
+</databaseChangeLog>

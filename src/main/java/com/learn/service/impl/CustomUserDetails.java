@@ -7,12 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.learn.exception.DataUnauthorizedException;
 import com.learn.model.User;
+import com.learn.model.enumeration.UserStatus;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
+
     private static final long serialVersionUID = 1L;
 
     private final User user;
@@ -24,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override
@@ -49,10 +52,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if (user.getUserStatus().name().equals("ACTIVATED")) {
-            return true;
+        if (user.getUserStatus().equals(UserStatus.NOTACTIVATED)) {
+            throw new DataUnauthorizedException("error.email.notactivated");
         }
-        return false;
+        if (!user.getUserStatus().equals(UserStatus.ACTIVATED)) {
+            return false;
+        }
+        return true;
     }
 
 }

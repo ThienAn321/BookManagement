@@ -1,5 +1,7 @@
 package com.learn.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -8,9 +10,12 @@ import com.learn.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 import java.security.Key;
 import java.util.Date;
@@ -21,19 +26,23 @@ import java.util.UUID;
 @Service
 public class JwtServiceImpl implements JwtService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
+
     @Value("${jwt.secret}")
     private String secret_key;
 
     @Value("${jwt.expiration}")
-    private Integer jwtExpiration;
+    private int jwtExpiration;
 
     @Value("${jwt.refreshExpiration}")
-    private Integer refreshExpirationDate;
+    private int refreshExpirationDate;
 
     @Override
     public String generateToken(UserDetails userDetails, String id, boolean refreshToken) {
         if (refreshToken) {
-            return generateRefreshToken(new HashMap<>(), userDetails, id);
+            Map<String, Object> map = new HashMap<>();
+            map.put("isRefreshToken", true);
+            return generateToken(map, userDetails, id);
         }
         return generateToken(new HashMap<>(), userDetails, id);
     }
@@ -62,36 +71,45 @@ public class JwtServiceImpl implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secret_key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    
-    private Claims parser(String token)  {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
 
+    private Claims parser(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
-    
+
     @Override
     public String getUsernameFromToken(String token) {
         Claims claims = parser(token);
         return claims.getSubject();
-
     }
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        try {
+            String username = getUsernameFromToken(token);
+            return (username.equals(userDetails.getUsername())) && !isRefreshToken(token) && !isTokenExpired(token);
+        } catch (SignatureException e) {
+            logger.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT claims string is empty: {}", e.getMessage());
+        }
+        return false;
     }
-    
+
     @Override
     public boolean isTokenExpired(String token) {
         return getExpirationToken(token).before(new Date());
     }
-    
+
     @Override
     public Date getExpirationToken(String token) {
         Claims claims = parser(token);
         return claims.getExpiration();
     }
-    
+
     @Override
     public Date getIssuedAt(String token) {
         Claims claims = parser(token);
@@ -104,10 +122,10 @@ public class JwtServiceImpl implements JwtService {
         return claims.getId();
     }
 
-//
-//    @Override
-//    public String getId(String token) {
-//        return extractClaim(token, Claims::getId);
-//    }
+    @Override
+    public boolean isRefreshToken(String token) {
+        Claims claims = parser(token);
+        return claims.get("isRefreshToken") != null;
+    }
 
 }
