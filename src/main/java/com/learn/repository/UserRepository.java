@@ -14,7 +14,7 @@ import com.learn.model.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmail(String email);
-    
+
     @Modifying
     @Query("UPDATE User u SET u.lockTime = ?1 WHERE u.email = ?2")
     void updateLockTime(Instant lockTime, String email);

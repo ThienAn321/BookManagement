@@ -10,9 +10,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.learn.model.UserSession;
+import com.learn.repository.UserSessionRepository;
 import com.learn.service.JwtService;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final UserDetailsService userDetailsService;
+
+    private final UserSessionRepository userSessionRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -44,7 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = jwtService.getUsernameFromToken(jwt);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+                String jti = jwtService.getId(jwt);
+                boolean isActive = userSessionRepository.findSessionId(jti)
+                        .map(UserSession::isActive)
+                        .orElse(false);
+                if (jwtService.isTokenValid(jwt, userDetails) && isActive) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                             null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -52,12 +61,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException ex) {
+        } catch (ExpiredJwtException ex1) {
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token out dated !");
+        } catch (SignatureException ex2) {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Not access token !");
         }
-
     }
 
 }

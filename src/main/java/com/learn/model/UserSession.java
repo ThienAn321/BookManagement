@@ -41,6 +41,9 @@ public class UserSession extends AbstractAuditingEntity {
 
     @Column(name = "is_active")
     private boolean isActive;
+    
+    @Column(name="is_delete", nullable = false)
+    private boolean isDelete;
 
     @Column(name = "expire_at")
     private Instant expireAt;

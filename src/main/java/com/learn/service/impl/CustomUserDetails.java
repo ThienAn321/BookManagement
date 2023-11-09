@@ -1,5 +1,6 @@
 package com.learn.service.impl;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.learn.exception.DataUnauthorizedException;
 import com.learn.model.User;
 import com.learn.model.enumeration.UserStatus;
 
@@ -22,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override
@@ -42,7 +42,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        if (user.getLockTime() == null) {
+            return true;
+        }
+        return user.getLockTime().compareTo(Instant.now()) < 0;
     }
 
     @Override
@@ -52,13 +55,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if (user.getUserStatus().equals(UserStatus.NOTACTIVATED)) {
-            throw new DataUnauthorizedException("error.email.notactivated");
-        }
-        if (!user.getUserStatus().equals(UserStatus.ACTIVATED)) {
-            return false;
-        }
-        return true;
+        return user.getUserStatus().equals(UserStatus.ACTIVATED);
     }
 
 }

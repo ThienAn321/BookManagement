@@ -17,6 +17,7 @@ public class UserAPI {
     @Autowired
     private UserRepository userRepository;
 
+    // tra ve dto rieng chu ko tra ve user
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();

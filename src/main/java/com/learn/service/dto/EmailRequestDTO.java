@@ -1,6 +1,7 @@
 package com.learn.service.dto;
 
-import jakarta.validation.constraints.Email;
+import com.learn.validation.ValidateEmail;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class RefreshRequestDTO {
+public class EmailRequestDTO {
 
-    @Email(message = "Phải đúng dạng email")
-    @NotBlank(message = "Không để trống Email")
-    @Size(max = 255, message = "Email tối đa 255 ký tự")
+    @NotBlank(message = "{email.notblank}")
+    @Size(max = 255, message = "{email.size}")
+    @ValidateEmail(message = "{email.invalid}")
     private String email;
 
 }

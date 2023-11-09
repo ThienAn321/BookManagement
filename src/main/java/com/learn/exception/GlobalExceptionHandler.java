@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
     public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("status", HttpStatus.BAD_REQUEST.value());
-        map.put("message", "Register failed");
+        map.put("message", "Data invalid");
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();

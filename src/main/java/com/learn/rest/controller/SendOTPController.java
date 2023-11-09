@@ -13,24 +13,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.service.UserService;
+import com.learn.service.dto.ChangephoneRequestDTO;
 import com.learn.service.dto.ObjectDTO;
-import com.learn.service.dto.RegisterDTO;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/auth")
-public class RegisterController {
-
-    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
-
+@RequestMapping("/api/v1/auth")
+public class SendOTPController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SendOTPController.class);
+    
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ObjectDTO> register(@RequestBody @Valid RegisterDTO request) {
-        logger.info("Register use {} at : {}", request.getEmail(), Instant.now());
-        return new ResponseEntity<>(userService.register(request), HttpStatus.CREATED);
+    @PostMapping("/changephone")
+    public ResponseEntity<ObjectDTO> resend(@RequestBody @Valid ChangephoneRequestDTO request) {
+        logger.info("User {} send verify to change email at : {}", request.getEmail(), Instant.now());
+        return new ResponseEntity<>(userService.changePhone(request), HttpStatus.OK);
     }
 
 }

@@ -4,19 +4,14 @@ import java.time.Instant;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learn.model.enumeration.TitleToken;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,26 +20,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 @Builder
-@Table(name = "verification_token")
+@Data
+@Table(name = "sms_otp")
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
-public class VerificationToken extends AbstractAuditingEntity {
+public class SmsOTP extends AbstractAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "title", nullable = false)
-    private TitleToken titleToken;
-
-    @Column(name = "token", columnDefinition = "NVARCHAR(255)", unique = true, nullable = false)
-    private String token;
 
     @Column(name = "otp", columnDefinition = "VARCHAR(60)", unique = true, nullable = false)
     private String otp;
@@ -54,13 +42,12 @@ public class VerificationToken extends AbstractAuditingEntity {
 
     @Column(name = "is_verify", nullable = false)
     private boolean isVerify;
-    
+
     @Column(name = "is_expire", nullable = false)
     private boolean isExpire;
 
-    @JsonIgnore
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
+
 }

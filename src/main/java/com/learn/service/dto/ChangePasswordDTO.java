@@ -1,6 +1,5 @@
 package com.learn.service.dto;
 
-import com.learn.validation.ValidateEmail;
 import com.learn.validation.ValidatePassword;
 
 import jakarta.validation.constraints.NotBlank;
@@ -14,16 +13,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequestDTO {
-    
-    @NotBlank(message = "{email.notblank}")
-    @Size(max = 255, message = "{email.size}")
-    @ValidateEmail(message = "{email.invalid}")
-    private String email;
-    
+public class ChangePasswordDTO {
+
     @NotBlank(message = "{password.notblank}")
     @Size(min = 8, max = 20, message = "{password.size}")
     @ValidatePassword(message = "{password.invalid}")
-    private String password;
+    private String oldPassword;
+
+    @NotBlank(message = "{password.notblank}")
+    @Size(min = 8, max = 20, message = "{password.size}")
+    @ValidatePassword(message = "{password.invalid}")
+    private String newPassword;
+
+    @NotBlank(message = "{password.notblank}")
+    @Size(min = 8, max = 20, message = "{password.size}")
+    @ValidatePassword(message = "{password.invalid}")
+    private String confirmNewPassword;
 
 }
