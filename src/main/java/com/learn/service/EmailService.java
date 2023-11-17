@@ -8,4 +8,8 @@ public interface EmailService {
 
     String buildEmail(String name, String link, String otp);
 
+    String buildEmailChangeEmail(String name, String link, String otp);
+
+    String buildEmailResetPassword(String name, String link, String otp, String password);
+
 }

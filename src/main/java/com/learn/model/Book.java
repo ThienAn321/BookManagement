@@ -15,8 +15,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Table(name = "book")
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
@@ -35,22 +36,22 @@ public class Book extends AbstractAuditingEntity {
     @Column(name = "id")
     private Integer id;
 
-    @NotNull
     @Column(name = "title", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String title;
+    
+    @Column(name="is_deleted", columnDefinition = "BOOLEAN")
+    private Boolean isDeleted;
 
-    @NotNull
     @Column(name = "stock", columnDefinition = "INT", nullable = false)
     private Integer stock;
 
-    @NotNull
     @Column(name = "rating", columnDefinition = "INT", nullable = true)
     private Integer rating;
 
     @Column(name = "description", columnDefinition = "NVARCHAR(255)", nullable = true)
     private String description;
 
-    @Column(name = "release_date")
+    @Column(name = "release_date", columnDefinition = "DATETIME", nullable = false)
     private Instant releaseDate;
 
     @OneToMany(mappedBy = "book")

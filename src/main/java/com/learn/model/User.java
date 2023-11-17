@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learn.model.enumeration.Role;
 import com.learn.model.enumeration.UserStatus;
 
@@ -18,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +49,7 @@ public class User extends AbstractAuditingEntity {
     private String fullname;
 
     @Column(name = "date_birth")
-    private String dateBirth;
+    private Instant dateBirth;
 
     @Column(name = "email", columnDefinition = "NVARCHAR(255)", unique = true, nullable = false)
     private String email;
@@ -62,11 +60,11 @@ public class User extends AbstractAuditingEntity {
     @Column(name = "failed_attempt", columnDefinition = "TINYINT")
     private Integer failedAttempt;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @Column(name = "lock_time", nullable = true)
     private Instant lockTime;
-
-    @OneToMany(mappedBy = "user")
-    private List<BorrowManagement> borrowManagement;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_id")
@@ -77,10 +75,12 @@ public class User extends AbstractAuditingEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    private List<BorrowManagement> borrowManagement;
+
+    @OneToMany(mappedBy = "user")
     private List<UserSession> userSession;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    private VerificationToken verificationToken;
+    @OneToMany(mappedBy = "user")
+    private List<VerificationToken> verificationToken;
 
 }

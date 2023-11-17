@@ -1,7 +1,7 @@
 package com.learn.service;
 
-import com.learn.service.dto.RefreshResponseDTO;
-import com.learn.service.dto.RefreshTokenDTO;
+import com.learn.service.dto.response.RefreshResponseDTO;
+import com.learn.service.dto.response.RefreshTokenDTO;
 
 public interface RefreshTokenService {
     

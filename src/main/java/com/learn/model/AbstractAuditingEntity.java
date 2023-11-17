@@ -22,7 +22,7 @@ public abstract class AbstractAuditingEntity {
     @CreatedBy
     @Column(name = "created_by", length = 50, updatable = false)
     @JsonIgnore
-    private String createdBy;
+    private String createdBy = "SYSTEM";
 
     @CreatedDate
     @Column(name = "create_at", updatable = false)
