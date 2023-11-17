@@ -14,7 +14,7 @@ import com.learn.repository.VerificationTokenRepository;
 @Component
 public class SchedulerConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(SchedulerConfig.class);
+    private final Logger logger = LoggerFactory.getLogger(SchedulerConfig.class);
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;

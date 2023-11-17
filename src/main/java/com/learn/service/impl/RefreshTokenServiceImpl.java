@@ -1,11 +1,11 @@
 package com.learn.service.impl;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -15,37 +15,40 @@ import com.learn.model.UserSession;
 import com.learn.repository.UserSessionRepository;
 import com.learn.service.JwtService;
 import com.learn.service.RefreshTokenService;
-import com.learn.service.dto.RefreshResponseDTO;
-import com.learn.service.dto.RefreshTokenDTO;
+import com.learn.service.dto.response.RefreshResponseDTO;
+import com.learn.service.dto.response.RefreshTokenDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RefreshTokenServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(RefreshTokenServiceImpl.class);
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+    private final UserSessionRepository userSessionRepository;
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private MessageSource message;
+    private final MessageSource message;
 
     @Override
     public RefreshResponseDTO refreshToken(RefreshTokenDTO request) {
         if (!jwtService.isRefreshToken(request.getRefreshToken())) {
             logger.error("Not a refresh token at : {}", Instant.now());
-            throw new DataInvalidException(message.getMessage("refresh.invalid", null, Locale.getDefault()));
+            throw new DataInvalidException("refreshtoken",
+                    message.getMessage("refresh.invalid", null, Locale.getDefault()), "refreshtoken.error.invalid");
         }
 
         String jti = jwtService.getId(request.getRefreshToken());
-        UserSession userSession = userSessionRepository.findSessionId(jti).orElseThrow(
-                () -> new DataNotFoundException(message.getMessage("usersession.notfound", null, Locale.getDefault())));
+        UserSession userSession = userSessionRepository.findSessionId(jti)
+                .orElseThrow(() -> new DataNotFoundException("refreshtoken",
+                        message.getMessage("usersession.notfound", null, Locale.getDefault()),
+                        "refreshtoken.error.invalid"));
         if (userSession.getExpireAt().compareTo(Instant.now()) > 0 && userSession.isActive()) {
+            userSession.setExpireAt(Instant.now().plus(60, ChronoUnit.MINUTES));
             CustomUserDetails userDetails = new CustomUserDetails(userSession.getUser());
             String newToken = jwtService.generateToken(userDetails, jti, false);
             logger.info("User {} generate new access token successfully at : {}", userDetails.getUsername(),
@@ -54,7 +57,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         logger.error("Refresh token {} is expired", request.getRefreshToken());
-        throw new DataInvalidException(message.getMessage("refreshtoken.expired", null, Locale.getDefault()));
+        throw new DataInvalidException("refreshtoken", message.getMessage("refreshtoken.expired", null, Locale.getDefault()), "refreshtoken.expired");
     }
 
 }

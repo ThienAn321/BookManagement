@@ -2,28 +2,30 @@ package com.learn.service;
 
 import org.springframework.security.core.Authentication;
 
-import com.learn.service.dto.ChangePasswordDTO;
-import com.learn.service.dto.ChangephoneRequestDTO;
-import com.learn.service.dto.EmailRequestDTO;
-import com.learn.service.dto.ObjectDTO;
-import com.learn.service.dto.RegisterDTO;
+import com.learn.service.dto.UserDTO;
+import com.learn.service.dto.request.ChangePasswordDTO;
+import com.learn.service.dto.request.ChangePhoneRequestDTO;
+import com.learn.service.dto.request.EmailRequestDTO;
+import com.learn.service.dto.response.MessageDTO;
 
 public interface UserService {
 
-    ObjectDTO register(RegisterDTO request);
+    MessageDTO register(UserDTO request);
 
-    ObjectDTO verifyLinkAndOtpConfirmAccount(String token, String otp);
+    MessageDTO verifyLinkAndOtpConfirmAccount(String token, String otp);
 
-    ObjectDTO changeEmail(EmailRequestDTO request);
+    MessageDTO changeEmail(EmailRequestDTO request, Authentication authentication);
 
-    ObjectDTO verifyChangeEmail(String token, String otp, EmailRequestDTO request);
+    MessageDTO verifyChangeEmail(String token, String otp, String newEmail);
 
-    ObjectDTO resetPassword(EmailRequestDTO request);
-    
-    ObjectDTO verifyResetPassword(String token, String otp, ChangePasswordDTO request, String email);
+    MessageDTO resetPassword(EmailRequestDTO request);
 
-    ObjectDTO changePassword(ChangePasswordDTO request, Authentication authentication);
-    
-    ObjectDTO changePhone(ChangephoneRequestDTO request);
+    MessageDTO verifyResetPassword(String token, String otp, ChangePasswordDTO request, String email);
+
+    MessageDTO changePassword(ChangePasswordDTO request, Authentication authentication);
+
+    MessageDTO changePhone(ChangePhoneRequestDTO request, Authentication authentication);
+
+    MessageDTO verifyChangePhone(String token, String otp, String newPhone);
 
 }

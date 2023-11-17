@@ -1,5 +1,8 @@
 package com.learn.security;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
@@ -21,6 +24,8 @@ public class CustomLogoutHandler implements LogoutHandler {
 
     private final UserSessionRepository userSessionRepository;
 
+    private final MessageSource message;
+
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String authHeader = request.getHeader("Authorization");
@@ -34,7 +39,9 @@ public class CustomLogoutHandler implements LogoutHandler {
         if (!jwtService.isRefreshToken(jwt)) {
             String jti = jwtService.getId(jwt);
             UserSession userSession = userSessionRepository.findSessionId(jti)
-                    .orElseThrow(() -> new DataNotFoundException("{usersession.notfound}"));
+                    .orElseThrow(() -> new DataNotFoundException("refreshtoken",
+                            message.getMessage("usersession.notfound", null, Locale.getDefault()),
+                            "refreshtoken.error.invalid"));
             userSession.setActive(false);
             userSessionRepository.save(userSession);
         }

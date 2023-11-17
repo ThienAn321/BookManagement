@@ -1,7 +1,9 @@
 package com.learn.security.jwt;
 
 import java.io.IOException;
+import java.time.Instant;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +12,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learn.model.UserSession;
 import com.learn.repository.UserSessionRepository;
 import com.learn.service.JwtService;
+import com.learn.service.dto.response.MessageDTO;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -32,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserSessionRepository userSessionRepository;
 
+    private final ObjectMapper objectMapper;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -50,9 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 String jti = jwtService.getId(jwt);
-                boolean isActive = userSessionRepository.findSessionId(jti)
-                        .map(UserSession::isActive)
-                        .orElse(false);
+                boolean isActive = userSessionRepository.findSessionId(jti).map(UserSession::isActive).orElse(false);
                 if (jwtService.isTokenValid(jwt, userDetails) && isActive) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                             null, userDetails.getAuthorities());
@@ -62,14 +66,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException ex1) {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token out dated !");
+            handleInvalidCorrelationId("Token out dated !", response);
         } catch (SignatureException ex2) {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Not access token !");
+            handleInvalidCorrelationId("This is not access token !", response);
         }
+    }
+
+    private void handleInvalidCorrelationId(String message, HttpServletResponse response) throws IOException {
+        MessageDTO error = new MessageDTO();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(message);
+        error.setTimestamp(Instant.now());
+
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(objectMapper.writeValueAsString(error));
     }
 
 }

@@ -1,32 +1,31 @@
 package com.learn;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import com.learn.config.TwilioConfig;
-import com.twilio.Twilio;
-
-import jakarta.annotation.PostConstruct;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableConfigurationProperties
+@EnableAsync
 public class BookManagementApplication {
     
-    private static final Logger logger = LoggerFactory.getLogger(BookManagementApplication.class);
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
     
-    @Autowired
-    private TwilioConfig twilioConfig;
-    
-    @PostConstruct
-    public void init() {
-        Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
-        logger.info("Twilio initialized with account sid : {}", twilioConfig.getAccountSid());
+    @Bean("threadPoolTaskExecutor")
+    public TaskExecutor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(20);
+        executor.setMaxPoolSize(1000);
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        return executor;
     }
 
     public static void main(String[] args) {

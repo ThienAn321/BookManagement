@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,56 +24,53 @@ import com.learn.repository.UserRepository;
 import com.learn.repository.UserSessionRepository;
 import com.learn.service.AuthenticationService;
 import com.learn.service.JwtService;
-import com.learn.service.dto.AuthenticationRequestDTO;
-import com.learn.service.dto.AuthenticationResponseDTO;
+import com.learn.service.dto.request.AuthenticationRequestDTO;
+import com.learn.service.dto.response.AuthenticationResponseDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+    private final UserSessionRepository userSessionRepository;
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MessageSource message;
+    private final MessageSource message;
 
     @Override
     @Transactional(dontRollbackOn = DataUnauthorizedException.class)
     public AuthenticationResponseDTO login(AuthenticationRequestDTO request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new DataNotFoundException(message.getMessage("email.notfound", null, Locale.getDefault())));
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new DataNotFoundException("email",
+                message.getMessage("email.notfound", null, Locale.getDefault()), "email.error.notfound"));
 
         try {
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (DisabledException ex1) {
-            logger.error("User {} with status {} failed to login at : {}", user.getEmail(), user.getUserStatus(),
+            logger.warn("User {} with status {} failed to login at : {}", user.getEmail(), user.getUserStatus(),
                     Instant.now());
-            throw new DataUnauthorizedException(message.getMessage("user.unauthorized", null, Locale.getDefault()));
+            throw new DataUnauthorizedException("email", message.getMessage("user.unauthorized", null, Locale.getDefault()), "email.error.unauthorized");
         } catch (BadCredentialsException ex2) {
             increaseFailedAttempts(user);
             logger.warn("User {} login failed at {}", user.getEmail(), Instant.now());
-            throw new DataUnauthorizedException(message.getMessage("password.notmatch", null, Locale.getDefault()));
+            throw new DataUnauthorizedException("password", message.getMessage("password.notmatch", null, Locale.getDefault()), "password.error.invalid");
         } catch (LockedException ex3) {
-            throw new DataUnauthorizedException(message.getMessage("user.lock30m", null, Locale.getDefault()));
+            logger.warn("User {} login failed at {}", user.getEmail(), Instant.now());
+            throw new DataUnauthorizedException("email", message.getMessage("user.lock30m", null, Locale.getDefault()), "email.lock");
         }
 
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -98,6 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user.getFailedAttempt() + 1 > MAX_FAILED_ATTEMPTS) {
             user.setLockTime(Instant.now().plus(30, ChronoUnit.MINUTES));
             userRepository.save(user);
+            logger.info("User {} got locked for 30 minutes at : {}", user.getEmail(), Instant.now());
         } else {
             int newIncrease = user.getFailedAttempt() + 1;
             userRepository.updateFailedAttempts(newIncrease, user.getEmail());

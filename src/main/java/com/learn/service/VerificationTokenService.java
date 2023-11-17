@@ -5,9 +5,7 @@ import com.learn.model.enumeration.TitleToken;
 
 public interface VerificationTokenService {
 
-    void sendVerificationToken(User user, TitleToken typeEmail);
-    
-    String sendResetPassword(User user);
+    String sendVerificationToken(User user, String newEmail, TitleToken typeEmail);
 
     boolean isExpire(String token, String otp, TitleToken typeEmail);
 

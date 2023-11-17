@@ -1,6 +1,7 @@
 package com.learn.repository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,10 @@ import com.learn.model.enumeration.TitleToken;
 @Repository
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Integer> {
     
-    @Query("SELECT t FROM VerificationToken t WHERE t.token = ?1 or t.otp = ?2 and t.titleToken = ?3")
+    @Query("SELECT t FROM VerificationToken t JOIN FETCH t.user u WHERE u.email = ?1")
+    List<VerificationToken> findVerifyTokenByEmail(String email);
+    
+    @Query("SELECT t FROM VerificationToken t WHERE t.token = ?1 or t.otp = ?2 and t.titleToken = ?3 ")
     Optional<VerificationToken> findByVerifyToken(String token, String otp, TitleToken typeToken);
     
     @Query("SELECT t FROM VerificationToken t WHERE t.user.id = ?1 and t.titleToken = ?2")

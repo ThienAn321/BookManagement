@@ -1,7 +1,7 @@
 package com.learn.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.learn.service.EmailService;
@@ -9,18 +9,21 @@ import com.learn.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage.RecipientType;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
+    @Async("threadPoolTaskExecutor")
     @Override
     public void sendMail(String from, String to, String subject, String message) throws MessagingException {
         MimeMessage mineMessage = emailSender.createMimeMessage();
         mineMessage.setFrom(new InternetAddress(from));
-        mineMessage.setRecipients(MimeMessage.RecipientType.TO, to);
+        mineMessage.setRecipients(RecipientType.TO, to);
         mineMessage.setSubject(subject);
         mineMessage.setContent(message, "text/html; charset=utf-8");
         emailSender.send(mineMessage);
@@ -35,13 +38,13 @@ public class EmailServiceImpl implements EmailService {
                 + "\">Active account</a><br>\r\n" + "OTP và đường link sẽ hết hạn trong vòng 15 phút.<br>\r\n"
                 + "Cảm ơn bạn.";
     }
-    
+
     @Override
     public String buildEmailChangeEmail(String name, String link, String otp) {
         return "Chào bạn " + name + ",<br>\r\n"
                 + "Chúng tôi nhận thấy bạn đang muốn đổi email mới. Vui lòng nhập OTP hoặc click vào đường link bên dưới để tiến hành đổi email mới :<br>\r\n"
                 + "OTP của bạn là : " + otp + "<br>\r\n"
-                + "Link : <a href=\"http://localhost:8080/api/v1/auth/sendChangeEmail?value=" + link
+                + "Link : <a href=\"http://localhost:8080/api/v1/auth/verifyChangeEmail?value=" + link
                 + "\">Active account</a><br>\r\n" + "OTP và đường link sẽ hết hạn trong vòng 15 phút.<br>\r\n"
                 + "Cảm ơn bạn.";
     }

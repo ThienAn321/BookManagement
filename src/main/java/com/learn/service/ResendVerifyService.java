@@ -1,12 +1,12 @@
 package com.learn.service;
 
-import com.learn.service.dto.ObjectDTO;
-import com.learn.service.dto.EmailRequestDTO;
+import com.learn.service.dto.request.EmailRequestDTO;
+import com.learn.service.dto.response.MessageDTO;
 
 public interface ResendVerifyService {
     
-    ObjectDTO resendVerifyAccount(EmailRequestDTO request);
+    MessageDTO resendVerifyAccount(EmailRequestDTO request);
     
-    ObjectDTO resendChangeEmail(EmailRequestDTO request);
+    MessageDTO resendChangeEmail(EmailRequestDTO request);
     
 }

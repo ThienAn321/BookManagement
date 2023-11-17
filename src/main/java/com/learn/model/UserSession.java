@@ -4,11 +4,10 @@ import java.time.Instant;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,15 +40,11 @@ public class UserSession extends AbstractAuditingEntity {
 
     @Column(name = "is_active")
     private boolean isActive;
-    
-    @Column(name="is_delete", nullable = false)
-    private boolean isDelete;
 
     @Column(name = "expire_at")
     private Instant expireAt;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

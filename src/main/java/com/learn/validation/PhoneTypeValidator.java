@@ -14,7 +14,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PhoneTypeValidator implements ConstraintValidator<ValidatePhone, String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(PhoneTypeValidator.class);
+    private final Logger logger = LoggerFactory.getLogger(PhoneTypeValidator.class);
 
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext context) {
@@ -25,6 +25,7 @@ public class PhoneTypeValidator implements ConstraintValidator<ValidatePhone, St
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         PhoneNumber phoneNumber = null;
         try {
+
             phoneNumber = phoneUtil.parse(phone, "VN");
         } catch (NumberParseException ex) {
             logger.warn("Fail to parse phone at : {}", Instant.now());
