@@ -1,7 +1,5 @@
 package com.learn.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -10,9 +8,7 @@ import com.learn.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -25,8 +21,6 @@ import java.util.UUID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
 
     @Value("${jwt.secret}")
     private String secret_key;
@@ -42,7 +36,7 @@ public class JwtServiceImpl implements JwtService {
         if (refreshToken) {
             Map<String, Object> map = new HashMap<>();
             map.put("isRefreshToken", true);
-            return generateToken(map, userDetails, id);
+            return generateRefreshToken(map, userDetails, id);
         }
         return generateToken(new HashMap<>(), userDetails, id);
     }
@@ -84,19 +78,11 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        try {
-            String username = getUsernameFromToken(token);
-            return (username.equals(userDetails.getUsername())) && !isRefreshToken(token) && !isTokenExpired(token);
-        } catch (SignatureException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+        if (isRefreshToken(token)) {
+            throw new SignatureException("");
         }
-        return false;
+        String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     @Override

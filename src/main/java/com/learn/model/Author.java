@@ -3,6 +3,8 @@ package com.learn.model;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,9 +34,11 @@ public class Author {
     @Column(name = "fullname", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String fullname;
 
-    @Column(name = "date_birth", columnDefinition = "DATETIME", nullable = false)
+    @Column(name = "date_birth", columnDefinition = "DATE", nullable = false)
     private Instant dateBirth;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author")
     private List<Book> book;
+
 }

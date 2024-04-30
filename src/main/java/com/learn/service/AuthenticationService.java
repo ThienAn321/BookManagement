@@ -1,7 +1,7 @@
 package com.learn.service;
 
-import com.learn.service.dto.AuthenticationRequestDTO;
-import com.learn.service.dto.AuthenticationResponseDTO;
+import com.learn.service.dto.request.AuthenticationRequestDTO;
+import com.learn.service.dto.response.AuthenticationResponseDTO;
 
 public interface AuthenticationService {
 
